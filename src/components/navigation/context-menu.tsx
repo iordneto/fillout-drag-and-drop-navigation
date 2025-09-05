@@ -34,7 +34,7 @@ export const NavigationContextMenu: React.FC<ContextMenuProps> = ({
         align="start"
         sideOffset={5}
       >
-        <DropdownMenuLabel className="font-medium text-[#1a1a1a] text-md bg-[#FAFBFC] px-3 py-2">
+        <DropdownMenuLabel className="font-medium text-[#1a1a1a] text-md bg-[#FAFBFC] px-3 py-2 border-b border-[#E1E1E1]">
           Settings
         </DropdownMenuLabel>
 
