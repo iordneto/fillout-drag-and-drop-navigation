@@ -1,65 +1,113 @@
 "use client";
 
-import { Plus } from "lucide-react";
-import { Fragment } from "react";
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+
+import {
+  arrayMove,
+  horizontalListSortingStrategy,
+  SortableContext,
+} from "@dnd-kit/sortable";
+import { Fragment, useState } from "react";
+import AddPageButton from "./add-page-button";
 import { NavigationContextMenu } from "./context-menu";
 import { useNavigationItems } from "./hooks/use-navigation-items";
-/* import { InsertButton } from "./insert-button"; */
 import { NavigationItem } from "./navigation-item";
 
 const StepNavigation: React.FC = () => {
   const {
     items,
     contextMenu,
-    hoveredInsertIndex,
     handleItemClick,
     handleRightClick,
     handleContextMenuAction,
-    /* insertPageAt, */
     addPageAtEnd,
     closeContextMenu,
-    setHoveredInsertIndex,
+    reorderItems,
   } = useNavigationItems();
+
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+  );
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as string);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    setActiveId(null);
+
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = items.findIndex((item) => item.id === active.id);
+    const newIndex = items.findIndex((item) => item.id === over.id);
+
+    if (oldIndex !== -1 && newIndex !== -1) {
+      const newItems = arrayMove(items, oldIndex, newIndex);
+      reorderItems(newItems);
+    }
+  };
+
+  const activeItem = activeId
+    ? items.find((item) => item.id === activeId)
+    : null;
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <div className="inline-flex items-center gap-10 navigation-dotted-line">
-        {items.map((item, index) => (
-          <Fragment key={item.id}>
-            <NavigationItem
-              item={item}
-              index={index}
-              onContextMenu={handleRightClick}
-              onClick={handleItemClick}
-              onHoverInsert={setHoveredInsertIndex}
-              showInsertButton={hoveredInsertIndex === index}
-            />
-          </Fragment>
-        ))}
-
-        {/* Insert point after last item */}
-        {/* <fieldset
-          className="relative group"
-          onMouseEnter={() => setHoveredInsertIndex(items.length)}
-          onMouseLeave={() => setHoveredInsertIndex(null)}
+      <DndContext
+        sensors={sensors}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={items.map((item) => item.id)}
+          strategy={horizontalListSortingStrategy}
         >
-          <InsertButton
-            index={items.length}
-            onInsert={insertPageAt}
-            isVisible={hoveredInsertIndex === items.length}
-          />
-        </fieldset> */}
+          <div className="inline-flex items-center gap-10 navigation-dotted-line">
+            {items.map((item, index) => (
+              <Fragment key={item.id}>
+                <NavigationItem
+                  item={item}
+                  index={index}
+                  onContextMenu={handleRightClick}
+                  onClick={handleItemClick}
+                />
+              </Fragment>
+            ))}
 
-        {/* Add page button */}
-        <button
-          onClick={addPageAtEnd}
-          className="flex items-center gap-2 px-3 py-2 text-gray-600 bg-white border-[0.5px] cursor-pointer hover:text-gray-900 hover:bg-gray-50 rounded-md transition-all duration-200"
-          type="button"
-        >
-          <Plus className="w-4 h-4" />
-          <span className="text-sm font-medium">Add page</span>
-        </button>
-      </div>
+            <AddPageButton onClick={addPageAtEnd} />
+          </div>
+        </SortableContext>
+
+        <DragOverlay>
+          {activeItem ? (
+            <div className="rotate-3 scale-105 opacity-90">
+              <NavigationItem
+                item={activeItem}
+                index={0}
+                onContextMenu={() => {}}
+                onClick={() => {}}
+                isDragging
+              />
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
 
       <NavigationContextMenu
         isOpen={contextMenu.isOpen}

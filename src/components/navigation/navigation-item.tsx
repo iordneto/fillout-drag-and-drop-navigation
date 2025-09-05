@@ -1,12 +1,14 @@
 "use client";
 
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { MoreVertical } from "lucide-react";
 import { memo } from "react";
 
 import type { NavigationItemProps } from "./types";
 
 export const NavigationItem = memo<NavigationItemProps>(
-  ({ item, onContextMenu, onClick }) => {
+  ({ item, onContextMenu, onClick, isDragging = false }) => {
     const getButtonStyles = () => {
       const baseStyles =
         "group flex items-center gap-1.5 px-2.5 py-1.5 rounded-md cursor-pointer transition-all duration-200 m-0";
@@ -29,26 +31,63 @@ export const NavigationItem = memo<NavigationItemProps>(
 
     const getMenuIconStyles = () => {
       const baseStyles =
-        "ml-0.5 w-0 h-4 transition-all duration-300 ease-out transform";
+        "ml-0.5 w-0 h-4 transition-all duration-300 ease-out transform cursor-pointer";
       const colorClass = item.isActive
         ? "opacity-100 w-4 scale-100"
         : "opacity-0 scale-95 pointer-events-none";
       return `${baseStyles} ${colorClass} text-[var(--navigation-item-menu-icon)] hover:text-[var(--navigation-item-menu-icon-hover)]`;
     };
 
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging: isSortableDragging,
+    } = useSortable({
+      id: item.id,
+      disabled: isDragging,
+    });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+    };
+
+    const getCursorStyles = () => {
+      if (item.isActive) {
+        return isSortableDragging
+          ? "cursor-grabbing shadow-2xl scale-105"
+          : "cursor-grab hover:cursor-grab";
+      }
+      return "cursor-pointer";
+    };
+
     return (
-      <div className="relative group flex items-center">
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={`relative group flex items-center ${
+          isSortableDragging ? "z-50" : ""
+        }`}
+      >
         <button
-          className={getButtonStyles()}
-          onContextMenu={(e) => onContextMenu(e, item.id)}
+          {...attributes}
+          {...listeners}
+          className={`${getButtonStyles()} ${getCursorStyles()}`}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            onContextMenu(e, item.id);
+          }}
           onClick={() => onClick(item.id)}
           type="button"
         >
           <item.icon className={getIconStyles()} />
-          <span className="text-sm font-medium">{item.label}</span>
+          <span className="text-sm font-medium select-none">{item.label}</span>
           <MoreVertical
-            onClick={(e) => onContextMenu(e, item.id)}
             className={getMenuIconStyles()}
+            onClick={(e) => onContextMenu(e, item.id)}
           />
         </button>
       </div>

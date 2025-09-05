@@ -148,6 +148,10 @@ export const useNavigationItems = () => {
     setContextMenu(DEFAULT_CONTEXT_MENU_STATE);
   }, []);
 
+  const reorderItems = useCallback((newItems: NavigationItem[]) => {
+    setItems(newItems);
+  }, []);
+
   return {
     items,
     contextMenu,
@@ -159,5 +163,6 @@ export const useNavigationItems = () => {
     addPageAtEnd,
     closeContextMenu,
     setHoveredInsertIndex,
+    reorderItems,
   };
 };

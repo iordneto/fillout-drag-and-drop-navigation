@@ -35,10 +35,9 @@ export interface ContextMenuProps {
 export interface NavigationItemProps {
   item: NavigationItem;
   index: number;
-  onContextMenu: (event: React.MouseEvent, itemId: string) => void;
+  onContextMenu: (e: React.MouseEvent, itemId: string) => void;
   onClick: (itemId: string) => void;
-  onHoverInsert?: (index: number | null) => void;
-  showInsertButton?: boolean;
+  isDragging?: boolean;
 }
 
 export interface InsertButtonProps {
