@@ -11,7 +11,7 @@ export const NavigationItem = memo<NavigationItemProps>(
   ({ item, onContextMenu, onClick, isDragging = false }) => {
     const getButtonStyles = () => {
       const baseStyles =
-        "group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg cursor-pointer transition-all duration-200 m-0";
+        "group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg cursor-pointer transition-all duration-200";
 
       if (item.isActive) {
         return `${baseStyles} bg-[var(--navigation-item-active-bg)] text-[var(--navigation-item-active-text)] shadow-[inset_0_0_0_0.5px_#E1E1E1,0_1px_1px_rgba(0,0,0,0.02),0_1px_3px_rgba(0,0,0,0.04)]`;
