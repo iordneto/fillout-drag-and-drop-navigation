@@ -44,7 +44,7 @@ export const NavigationContextMenu: React.FC<ContextMenuProps> = ({
             className="gap-1.5 font-medium"
           >
             <FlagIcon className="w-4 h-4 text-blue-500 stroke-2" />
-            Set as first pages
+            Set as first page
           </DropdownMenuItem>
 
           <DropdownMenuItem
