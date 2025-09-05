@@ -84,15 +84,26 @@ export const useNavigationStore = create<NavigationStore>()(
         });
       },
 
-      handleContextMenuAction: (_action: ContextMenuAction) => {
-        /*
-         * action: "setFirst" | "rename" | "copy" | "duplicate" | "delete"
-         * setFirst: Set the item as the first item
-         * rename: Rename the item
-         * copy: Copy the item
-         * duplicate: Duplicate the item
-         * delete: Delete the item
-         */
+      handleContextMenuAction: (action: ContextMenuAction) => {
+        const { contextMenu, items } = get();
+        if (!contextMenu.itemId) return;
+
+        const itemId = contextMenu.itemId;
+        const targetItem = items.find((item) => item.id === itemId);
+
+        switch (action) {
+          case "delete":
+            if (!targetItem?.isFixed) {
+              set((state) => ({
+                items: state.items.filter((item) => item.id !== itemId),
+              }));
+            }
+            break;
+          default:
+            break;
+        }
+
+        set({ contextMenu: DEFAULT_CONTEXT_MENU_STATE });
       },
 
       insertPageAt: (index: number) => {
