@@ -47,7 +47,7 @@ export const NavigationItem = memo<NavigationItemProps>(
       isDragging: isSortableDragging,
     } = useSortable({
       id: item.id,
-      disabled: isDragging,
+      disabled: isDragging || item.isFixed,
     });
 
     const style = {
@@ -56,6 +56,10 @@ export const NavigationItem = memo<NavigationItemProps>(
     };
 
     const getCursorStyles = () => {
+      if (item.isFixed) {
+        return "cursor-default";
+      }
+
       if (item.isActive) {
         return isSortableDragging
           ? "cursor-grabbing shadow-2xl scale-105"
@@ -73,8 +77,8 @@ export const NavigationItem = memo<NavigationItemProps>(
         }`}
       >
         <button
-          {...attributes}
-          {...listeners}
+          {...(item.isFixed ? {} : attributes)}
+          {...(item.isFixed ? {} : listeners)}
           className={`${getButtonStyles()} ${getCursorStyles()}`}
           onContextMenu={(e) => {
             e.preventDefault();

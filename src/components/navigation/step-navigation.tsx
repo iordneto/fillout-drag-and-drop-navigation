@@ -20,6 +20,7 @@ import AddPageButton from "./add-page-button";
 import { NavigationContextMenu } from "./context-menu";
 import { useNavigationItems } from "./hooks/use-navigation-items";
 import { NavigationItem } from "./navigation-item";
+import { useNavigationStore } from "./store";
 
 const StepNavigation: React.FC = () => {
   const {
@@ -33,6 +34,8 @@ const StepNavigation: React.FC = () => {
     reorderItems,
   } = useNavigationItems();
 
+  const { isValidDropPosition } = useNavigationStore();
+
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const sensors = useSensors(
@@ -44,6 +47,12 @@ const StepNavigation: React.FC = () => {
   );
 
   const handleDragStart = (event: DragStartEvent) => {
+    const activeItem = items.find((item) => item.id === event.active.id);
+
+    if (activeItem?.isFixed) {
+      return;
+    }
+
     setActiveId(event.active.id as string);
   };
 
@@ -53,6 +62,10 @@ const StepNavigation: React.FC = () => {
     setActiveId(null);
 
     if (!over || active.id === over.id) return;
+
+    if (!isValidDropPosition(active.id as string, over.id as string)) {
+      return;
+    }
 
     const oldIndex = items.findIndex((item) => item.id === active.id);
     const newIndex = items.findIndex((item) => item.id === over.id);
