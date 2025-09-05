@@ -6,6 +6,7 @@ import { devtools } from "zustand/middleware";
 import {
   DEFAULT_CONTEXT_MENU_STATE,
   DEFAULT_NAVIGATION_ITEMS,
+  FIXED_PAGE_IDS,
 } from "./constants";
 import type {
   ContextMenuAction,
@@ -14,7 +15,7 @@ import type {
 } from "./types";
 
 interface NavigationStore {
-  // Estados
+  // States
   items: NavigationItem[];
   contextMenu: ContextMenuState;
   hoveredInsertIndex: number | null;
@@ -28,6 +29,10 @@ interface NavigationStore {
   closeContextMenu: () => void;
   setHoveredInsertIndex: (index: number | null) => void;
   reorderItems: (newItems: NavigationItem[]) => void;
+
+  // Helpers
+  getMovableItems: () => NavigationItem[];
+  isValidDropPosition: (activeId: string, overId: string) => boolean;
 }
 
 export const useNavigationStore = create<NavigationStore>()(
@@ -36,6 +41,23 @@ export const useNavigationStore = create<NavigationStore>()(
       items: DEFAULT_NAVIGATION_ITEMS,
       contextMenu: DEFAULT_CONTEXT_MENU_STATE,
       hoveredInsertIndex: null,
+
+      getMovableItems: () => {
+        const { items } = get();
+        return items.filter((item) => !item.isFixed);
+      },
+
+      isValidDropPosition: (activeId: string, overId: string) => {
+        const { items } = get();
+        const activeItem = items.find((item) => item.id === activeId);
+        const overItem = items.find((item) => item.id === overId);
+
+        if (activeItem?.isFixed) return false;
+
+        if (overItem?.isFixed) return false;
+
+        return true;
+      },
 
       handleItemClick: (itemId: string) => {
         set((state) => ({
@@ -57,94 +79,38 @@ export const useNavigationStore = create<NavigationStore>()(
         });
       },
 
-      handleContextMenuAction: (action: ContextMenuAction) => {
-        const { contextMenu, items } = get();
-        if (!contextMenu.itemId) return;
-
-        const itemId = contextMenu.itemId;
-
-        switch (action) {
-          case "setFirst":
-            set((state) => ({
-              items: state.items.map((item) => ({
-                ...item,
-                isActive: item.id === itemId,
-              })),
-            }));
-            break;
-
-          case "rename": {
-            const newName = prompt("Enter new name:");
-            if (newName?.trim()) {
-              set((state) => ({
-                items: state.items.map((item) =>
-                  item.id === itemId
-                    ? { ...item, label: newName.trim() }
-                    : item,
-                ),
-              }));
-            }
-            break;
-          }
-
-          case "copy":
-            navigator.clipboard?.writeText(
-              `Navigation item: ${
-                items.find((item) => item.id === itemId)?.label
-              }`,
-            );
-            break;
-
-          case "duplicate": {
-            const itemToDuplicate = items.find((item) => item.id === itemId);
-            if (itemToDuplicate) {
-              const newItem: NavigationItem = {
-                ...itemToDuplicate,
-                id: crypto.randomUUID(),
-                label: `${itemToDuplicate.label} Copy`,
-                isActive: false,
-              };
-
-              set((state) => {
-                const index = state.items.findIndex(
-                  (item) => item.id === itemId,
-                );
-                return {
-                  items: [
-                    ...state.items.slice(0, index + 1),
-                    newItem,
-                    ...state.items.slice(index + 1),
-                  ],
-                };
-              });
-            }
-            break;
-          }
-
-          case "delete":
-            set((state) => ({
-              items: state.items.filter((item) => item.id !== itemId),
-            }));
-            break;
-        }
-
-        set({ contextMenu: DEFAULT_CONTEXT_MENU_STATE });
+      handleContextMenuAction: (_action: ContextMenuAction) => {
+        /*
+         * action: "setFirst" | "rename" | "copy" | "duplicate" | "delete"
+         * setFirst: Set the item as the first item
+         * rename: Rename the item
+         * copy: Copy the item
+         * duplicate: Duplicate the item
+         * delete: Delete the item
+         */
       },
 
       insertPageAt: (index: number) => {
         const { items } = get();
+        const endingIndex = items.findIndex(
+          (item) => item.id === FIXED_PAGE_IDS.ENDING,
+        );
+
+        const finalIndex = index >= endingIndex ? endingIndex : index;
+
         const newItem: NavigationItem = {
           id: crypto.randomUUID(),
-          label: `Page ${items.length + 1}`,
+          label: `Page ${items.filter((item) => !item.isFixed).length + 1}`,
           icon: FileText,
           isActive: false,
+          isFixed: false,
         };
 
         set((state) => ({
           items: [
-            ...state.items.slice(0, index),
+            ...state.items.slice(0, finalIndex),
             newItem,
-            ...state.items.slice(index),
+            ...state.items.slice(finalIndex),
           ],
           hoveredInsertIndex: null,
         }));
@@ -152,15 +118,24 @@ export const useNavigationStore = create<NavigationStore>()(
 
       addPageAtEnd: () => {
         const { items } = get();
+        const endingIndex = items.findIndex(
+          (item) => item.id === FIXED_PAGE_IDS.ENDING,
+        );
+
         const newItem: NavigationItem = {
           id: crypto.randomUUID(),
-          label: `Page ${items.length + 1}`,
+          label: `Page ${items.filter((item) => !item.isFixed).length + 1}`,
           icon: FileText,
           isActive: false,
+          isFixed: false,
         };
 
         set((state) => ({
-          items: [...state.items, newItem],
+          items: [
+            ...state.items.slice(0, endingIndex),
+            newItem,
+            ...state.items.slice(endingIndex),
+          ],
         }));
       },
 
@@ -173,7 +148,30 @@ export const useNavigationStore = create<NavigationStore>()(
       },
 
       reorderItems: (newItems: NavigationItem[]) => {
-        set({ items: newItems });
+        const { items } = get();
+
+        const infoIndex = newItems.findIndex(
+          (item) => item.id === FIXED_PAGE_IDS.INFO,
+        );
+        const endingIndex = newItems.findIndex(
+          (item) => item.id === FIXED_PAGE_IDS.ENDING,
+        );
+
+        if (infoIndex !== 0 || endingIndex !== newItems.length - 1) {
+          const movableItems = newItems.filter((item) => !item.isFixed);
+          const infoItem = items.find(
+            (item) => item.id === FIXED_PAGE_IDS.INFO,
+          )!;
+          const endingItem = items.find(
+            (item) => item.id === FIXED_PAGE_IDS.ENDING,
+          )!;
+
+          set({
+            items: [infoItem, ...movableItems, endingItem],
+          });
+        } else {
+          set({ items: newItems });
+        }
       },
     }),
     {
