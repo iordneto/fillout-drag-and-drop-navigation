@@ -1,27 +1,34 @@
 import { CircleCheck, FileText, InfoIcon } from "lucide-react";
 import type { NavigationItem } from "./types";
 
+export const FIXED_PAGE_IDS = {
+  INFO: crypto.randomUUID(),
+  ENDING: crypto.randomUUID(),
+} as const;
+
 export const DEFAULT_NAVIGATION_ITEMS: NavigationItem[] = [
   {
-    id: "1",
+    id: FIXED_PAGE_IDS.INFO,
     label: "Info",
     icon: InfoIcon,
     isActive: true,
+    isFixed: true, // Sempre primeira
   },
   {
-    id: "2",
+    id: crypto.randomUUID(),
     label: "Details",
     icon: FileText,
   },
   {
-    id: "3",
+    id: crypto.randomUUID(),
     label: "Other",
     icon: FileText,
   },
   {
-    id: "4",
+    id: FIXED_PAGE_IDS.ENDING,
     label: "Ending",
     icon: CircleCheck,
+    isFixed: true, // Sempre última
   },
 ];
 

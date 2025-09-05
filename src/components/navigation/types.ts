@@ -5,6 +5,7 @@ export interface NavigationItem {
   label: string;
   icon: ElementType;
   isActive?: boolean;
+  isFixed?: boolean; // Nova propriedade para páginas fixas
 }
 
 export interface Position {
