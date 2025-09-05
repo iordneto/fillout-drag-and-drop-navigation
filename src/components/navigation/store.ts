@@ -56,6 +56,11 @@ export const useNavigationStore = create<NavigationStore>()(
 
         if (overItem?.isFixed) return false;
 
+        const overIndex = items.findIndex((item) => item.id === overId);
+        if (overIndex === 0) return false;
+
+        if (overIndex === items.length - 1) return false;
+
         return true;
       },
 
@@ -161,10 +166,12 @@ export const useNavigationStore = create<NavigationStore>()(
           const movableItems = newItems.filter((item) => !item.isFixed);
           const infoItem = items.find(
             (item) => item.id === FIXED_PAGE_IDS.INFO,
-          )!;
+          );
           const endingItem = items.find(
             (item) => item.id === FIXED_PAGE_IDS.ENDING,
-          )!;
+          );
+
+          if (!infoItem || !endingItem) return;
 
           set({
             items: [infoItem, ...movableItems, endingItem],

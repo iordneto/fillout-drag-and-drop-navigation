@@ -34,7 +34,7 @@ const StepNavigation: React.FC = () => {
     reorderItems,
   } = useNavigationItems();
 
-  const { isValidDropPosition } = useNavigationStore();
+  const { isValidDropPosition, getMovableItems } = useNavigationStore();
 
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -80,6 +80,8 @@ const StepNavigation: React.FC = () => {
     ? items.find((item) => item.id === activeId)
     : null;
 
+  const movableItems = getMovableItems();
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <DndContext
@@ -88,7 +90,7 @@ const StepNavigation: React.FC = () => {
         onDragEnd={handleDragEnd}
       >
         <SortableContext
-          items={items.map((item) => item.id)}
+          items={movableItems.map((item) => item.id)}
           strategy={horizontalListSortingStrategy}
         >
           <div className="inline-flex items-center gap-10 navigation-dotted-line">
