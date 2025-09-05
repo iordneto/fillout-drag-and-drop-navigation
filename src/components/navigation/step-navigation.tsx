@@ -19,6 +19,7 @@ import { Fragment, useState } from "react";
 import AddPageButton from "./add-page-button";
 import { NavigationContextMenu } from "./context-menu";
 import { useNavigationItems } from "./hooks/use-navigation-items";
+import { InsertButton } from "./insert-button";
 import { NavigationItem } from "./navigation-item";
 import { useNavigationStore } from "./store";
 
@@ -26,11 +27,14 @@ const StepNavigation: React.FC = () => {
   const {
     items,
     contextMenu,
+    hoveredInsertIndex,
     handleItemClick,
     handleRightClick,
     handleContextMenuAction,
+    insertPageAt,
     addPageAtEnd,
     closeContextMenu,
+    setHoveredInsertIndex,
     reorderItems,
   } = useNavigationItems();
 
@@ -76,6 +80,14 @@ const StepNavigation: React.FC = () => {
     }
   };
 
+  const handleInsertHover = (index: number) => {
+    setHoveredInsertIndex(index);
+  };
+
+  const handleInsertLeave = () => {
+    setHoveredInsertIndex(null);
+  };
+
   const activeItem = activeId
     ? items.find((item) => item.id === activeId)
     : null;
@@ -93,9 +105,26 @@ const StepNavigation: React.FC = () => {
           items={movableItems.map((item) => item.id)}
           strategy={horizontalListSortingStrategy}
         >
-          <div className="inline-flex items-center gap-10 navigation-dotted-line">
+          <fieldset
+            className="inline-flex items-center navigation-dotted-line"
+            onMouseLeave={handleInsertLeave}
+          >
             {items.map((item, index) => (
               <Fragment key={item.id}>
+                {index > 0 && (
+                  <fieldset
+                    className="flex items-center justify-center px-5"
+                    onMouseEnter={() => handleInsertHover(index)}
+                    onMouseLeave={handleInsertLeave}
+                  >
+                    <InsertButton
+                      index={index}
+                      onInsert={insertPageAt}
+                      isVisible={hoveredInsertIndex === index}
+                    />
+                  </fieldset>
+                )}
+
                 <NavigationItem
                   item={item}
                   index={index}
@@ -106,7 +135,7 @@ const StepNavigation: React.FC = () => {
             ))}
 
             <AddPageButton onClick={addPageAtEnd} />
-          </div>
+          </fieldset>
         </SortableContext>
 
         <DragOverlay>
