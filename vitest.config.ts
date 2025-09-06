@@ -18,6 +18,6 @@ export default defineConfig({
   },
   // Desabilita completamente o processamento de CSS
   css: {
-    postcss: null,
+    postcss: undefined,
   },
 });
