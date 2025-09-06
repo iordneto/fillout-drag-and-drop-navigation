@@ -69,7 +69,6 @@ export const useNavigationItems = () => {
     [storeReorderItems],
   );
 
-  // Retorna exatamente a mesma interface de antes
   return {
     items,
     contextMenu,

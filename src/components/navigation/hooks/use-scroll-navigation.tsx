@@ -23,12 +23,11 @@ export const useScrollNavigation = (): UseScrollNavigationReturn => {
   const firstItemRef = useRef<HTMLDivElement>(null);
   const lastItemRef = useRef<HTMLDivElement>(null);
 
-  // Scroll function with smooth animation
   const scrollNavigation = useCallback((direction: "left" | "right") => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    const scrollAmount = 200; // Amount to scroll in pixels
+    const scrollAmount = 200;
     const targetScrollLeft =
       direction === "left"
         ? container.scrollLeft - scrollAmount
@@ -40,15 +39,12 @@ export const useScrollNavigation = (): UseScrollNavigationReturn => {
     });
   }, []);
 
-  // IntersectionObserver callback to update arrow states
   const handleIntersection = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
         if (entry.target.id === "first-nav-item") {
-          // If first item is visible, can't scroll left
           setCanScrollLeft(!entry.isIntersecting);
         } else if (entry.target.id === "last-nav-item") {
-          // If last item is visible, can't scroll right
           setCanScrollRight(!entry.isIntersecting);
         }
       });
@@ -56,7 +52,6 @@ export const useScrollNavigation = (): UseScrollNavigationReturn => {
     [],
   );
 
-  // Setup IntersectionObserver
   useEffect(() => {
     const container = scrollContainerRef.current;
     const firstItem = firstItemRef.current;
@@ -67,7 +62,7 @@ export const useScrollNavigation = (): UseScrollNavigationReturn => {
     const observer = new IntersectionObserver(handleIntersection, {
       root: container,
       rootMargin: "0px",
-      threshold: 0.99, // Almost fully visible
+      threshold: 0.99,
     });
 
     observer.observe(firstItem);
@@ -76,7 +71,7 @@ export const useScrollNavigation = (): UseScrollNavigationReturn => {
     return () => {
       observer.disconnect();
     };
-  }, [handleIntersection]); // Removed items.length dependency to fix linter warning
+  }, [handleIntersection]);
 
   return {
     scrollContainerRef,
