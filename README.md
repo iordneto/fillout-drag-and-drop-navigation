@@ -6,7 +6,7 @@ A modern, accessible drag-and-drop navigation component built with React, TypeSc
 
 ## 🌟 Live Demo
 
-🔥 **[Try the Interactive Demo](https://fillout-drag-and-drop-navigation-iord-j1py1a6mn.vercel.app/)** - Experience the drag-and-drop functionality live!
+🔥 **[Try the Interactive Demo](https://fillout-drag-and-drop-navigation-iord-j86i62g7s.vercel.app/)** - Experience the drag-and-drop functionality live!
 
 > Experience the full drag-and-drop functionality with intelligent constraints, smooth animations, and responsive design.
 
