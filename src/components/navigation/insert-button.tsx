@@ -10,7 +10,11 @@ export const InsertButton = ({
     return `
       flex items-center justify-center overflow-hidden
       transition-all duration-300 ease-out w-0
-      ${isVisible ? "w-6 scale-100 opacity-100" : "w-0 scale-0 opacity-0"}
+      ${
+        isVisible
+          ? "w-6 scale-100 opacity-100 delay-150"
+          : "w-0 scale-0 opacity-0 delay-0"
+      }
     `;
   };
 
