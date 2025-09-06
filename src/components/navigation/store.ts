@@ -47,18 +47,21 @@ export const useNavigationStore = create<NavigationStore>()(
         return items.filter((item) => !item.isFixed);
       },
 
+      /**
+       * Validates if a drag-drop operation is allowed.
+       * Fixed items (Info/Ending) cannot be moved or be drop targets.
+       * Items cannot be dropped at first (0) or last position to preserve fixed items.
+       */
       isValidDropPosition: (activeId: string, overId: string) => {
         const { items } = get();
         const activeItem = items.find((item) => item.id === activeId);
         const overItem = items.find((item) => item.id === overId);
 
         if (activeItem?.isFixed) return false;
-
         if (overItem?.isFixed) return false;
 
         const overIndex = items.findIndex((item) => item.id === overId);
         if (overIndex === 0) return false;
-
         if (overIndex === items.length - 1) return false;
 
         return true;
@@ -106,6 +109,10 @@ export const useNavigationStore = create<NavigationStore>()(
         set({ contextMenu: DEFAULT_CONTEXT_MENU_STATE });
       },
 
+      /**
+       * Inserts a new page at the specified index.
+       * Always inserts before the Ending item, even if index is beyond it.
+       */
       insertPageAt: (index: number) => {
         const { items } = get();
         const endingIndex = items.findIndex(
@@ -163,6 +170,10 @@ export const useNavigationStore = create<NavigationStore>()(
         set({ hoveredInsertIndex: index });
       },
 
+      /**
+       * Reorders items while ensuring fixed items stay in correct positions.
+       * If Info is not first or Ending is not last, automatically corrects the order.
+       */
       reorderItems: (newItems: NavigationItem[]) => {
         const { items } = get();
 
@@ -174,6 +185,7 @@ export const useNavigationStore = create<NavigationStore>()(
         );
 
         if (infoIndex !== 0 || endingIndex !== newItems.length - 1) {
+          // Auto-correct the order
           const movableItems = newItems.filter((item) => !item.isFixed);
           const infoItem = items.find(
             (item) => item.id === FIXED_PAGE_IDS.INFO,

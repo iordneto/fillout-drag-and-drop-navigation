@@ -28,6 +28,10 @@ export const useDragAndDrop = (
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
+      /**
+       * Prevents accidental drags - user must drag 8px before drag starts.
+       * This allows for normal clicks without triggering drag operations.
+       */
       activationConstraint: {
         distance: 8,
       },

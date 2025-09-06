@@ -39,13 +39,17 @@ export const useScrollNavigation = (): UseScrollNavigationReturn => {
     });
   }, []);
 
+  /**
+   * Determines scroll button visibility based on sentinel elements.
+   * When first/last items go OUT OF VIEW, their respective scroll buttons appear.
+   */
   const handleIntersection = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
         if (entry.target.id === "first-nav-item") {
-          setCanScrollLeft(!entry.isIntersecting);
+          setCanScrollLeft(!entry.isIntersecting); // Not visible = can scroll left
         } else if (entry.target.id === "last-nav-item") {
-          setCanScrollRight(!entry.isIntersecting);
+          setCanScrollRight(!entry.isIntersecting); // Not visible = can scroll right
         }
       });
     },
@@ -62,7 +66,7 @@ export const useScrollNavigation = (): UseScrollNavigationReturn => {
     const observer = new IntersectionObserver(handleIntersection, {
       root: container,
       rootMargin: "0px",
-      threshold: 0.99,
+      threshold: 0.99, // Nearly fully visible = considered "intersecting"
     });
 
     observer.observe(firstItem);
