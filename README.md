@@ -1,9 +1,18 @@
 # 🧭 Fillout Drag & Drop Navigation
 
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Visit_Now-blue?style=for-the-badge)](https://fillout-drag-and-drop-navigation-iord-j1py1a6mn.vercel.app/)
+
 A modern, accessible drag-and-drop navigation component built with React, TypeScript, and Tailwind CSS.
+
+## 🌟 Live Demo
+
+🔥 **[Try the Interactive Demo](https://fillout-drag-and-drop-navigation-iord-j1py1a6mn.vercel.app/)** - Experience the drag-and-drop functionality live!
+
+> Experience the full drag-and-drop functionality with intelligent constraints, smooth animations, and responsive design.
 
 ## 📋 Assignment Reference
 
+- **🚀 [Live Demo](https://fillout-drag-and-drop-navigation-iord-j1py1a6mn.vercel.app/)** - Interactive demonstration
 - **📋 [Assignment Instructions](https://recruiting.fillout.com/frontend-take-home)** - Original take-home requirements
 - **🎨 [Figma Design Reference](https://www.figma.com/design/ed3Q3i07AsMXevtcN5dYKX/Fillout-Frontend-Take-home---July-2025--Community-?node-id=1-107&t=8W3nbcfALIiObsEv-1)** - Visual design specifications
 - **💾 [GitHub Repository](https://github.com/iordneto/fillout-drag-and-drop-navigation)** - Complete source code
