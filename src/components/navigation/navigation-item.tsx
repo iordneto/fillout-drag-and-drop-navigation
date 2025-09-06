@@ -74,7 +74,7 @@ export const NavigationItem = memo<NavigationItemProps>(
         style={style}
         className={`relative group flex items-center ${
           isSortableDragging ? "z-50" : ""
-        }`}
+        } ${item.isNew ? "animate-fade-in" : ""}`}
       >
         <button
           {...(item.isFixed ? {} : attributes)}

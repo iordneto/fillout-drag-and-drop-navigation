@@ -1,11 +1,20 @@
 import type { ElementType } from "react";
 
+/*
+ * @param id - The unique identifier for the navigation item.
+ * @param label - The text label for the navigation item.
+ * @param icon - The icon component for the navigation item.
+ * @param isActive - Whether the navigation item is active.
+ * @param isFixed - Whether the navigation item is fixed.
+ * @param isNew - Whether the navigation item is new.
+ */
 export interface NavigationItem {
   id: string;
   label: string;
   icon: ElementType;
   isActive?: boolean;
-  isFixed?: boolean; // Nova propriedade para páginas fixas
+  isFixed?: boolean;
+  isNew?: boolean;
 }
 
 export interface Position {

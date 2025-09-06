@@ -1,13 +1,12 @@
 "use client";
 
-import { DndContext, DragOverlay } from "@dnd-kit/core";
+import { DndContext } from "@dnd-kit/core";
 import { memo } from "react";
-import { DRAG_OVERLAY_STYLES, SCROLL_CONTAINER_STYLES } from "./constants";
+import { SCROLL_CONTAINER_STYLES } from "./constants";
 import { NavigationContextMenu } from "./context-menu";
 import { useDragAndDrop } from "./hooks/use-drag-and-drop";
 import { useNavigationItems } from "./hooks/use-navigation-items";
 import { useScrollNavigation } from "./hooks/use-scroll-navigation";
-import { NavigationItem } from "./navigation-item";
 import { NavigationList } from "./navigation-list";
 import { ScrollArrowButton } from "./scroll-arrow-button";
 import { useNavigationStore } from "./store";
@@ -38,8 +37,11 @@ const StepNavigation = memo(() => {
 
   const { isValidDropPosition, getMovableItems } = useNavigationStore();
 
-  const { sensors, handleDragStart, handleDragEnd, activeItem } =
-    useDragAndDrop(items, isValidDropPosition, reorderItems);
+  const { sensors, handleDragStart, handleDragEnd, modifiers } = useDragAndDrop(
+    items,
+    isValidDropPosition,
+    reorderItems,
+  );
 
   const handleInsertHover = (index: number) => {
     setHoveredInsertIndex(index);
@@ -69,6 +71,7 @@ const StepNavigation = memo(() => {
             sensors={sensors}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
+            modifiers={modifiers}
           >
             <NavigationList
               items={items}
@@ -84,7 +87,7 @@ const StepNavigation = memo(() => {
               onInsertLeave={handleInsertLeave}
             />
 
-            <DragOverlay>
+            {/* <DragOverlay>
               {activeItem ? (
                 <div className={DRAG_OVERLAY_STYLES}>
                   <NavigationItem
@@ -96,7 +99,7 @@ const StepNavigation = memo(() => {
                   />
                 </div>
               ) : null}
-            </DragOverlay>
+            </DragOverlay> */}
           </DndContext>
         </div>
 

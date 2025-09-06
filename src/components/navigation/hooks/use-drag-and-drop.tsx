@@ -7,6 +7,7 @@ import type {
   SensorOptions,
 } from "@dnd-kit/core";
 import { PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { restrictToHorizontalAxis } from "@dnd-kit/modifiers";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useState } from "react";
 import type { NavigationItem } from "../types";
@@ -17,6 +18,7 @@ export interface UseDragAndDropReturn {
   handleDragStart: (event: DragStartEvent) => void;
   handleDragEnd: (event: DragEndEvent) => void;
   activeItem: NavigationItem | null;
+  modifiers: (typeof restrictToHorizontalAxis)[];
 }
 
 export const useDragAndDrop = (
@@ -78,5 +80,6 @@ export const useDragAndDrop = (
     handleDragStart,
     handleDragEnd,
     activeItem,
+    modifiers: [restrictToHorizontalAxis],
   };
 };

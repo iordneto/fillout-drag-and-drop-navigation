@@ -113,6 +113,11 @@ export const useNavigationStore = create<NavigationStore>()(
        * Inserts a new page at the specified index.
        * Always inserts before the Ending item, even if index is beyond it.
        */
+      /**
+       * Inserts a new page at the specified index.
+       * Always inserts before the Ending item, even if index is beyond it.
+       * Auto-activates the new page and applies fade-in animation.
+       */
       insertPageAt: (index: number) => {
         const { items } = get();
         const endingIndex = items.findIndex(
@@ -120,23 +125,38 @@ export const useNavigationStore = create<NavigationStore>()(
         );
 
         const finalIndex = index >= endingIndex ? endingIndex : index;
+        const newItemId = crypto.randomUUID();
 
         const newItem: NavigationItem = {
-          id: crypto.randomUUID(),
+          id: newItemId,
           label: `Page ${items.filter((item) => !item.isFixed).length + 1}`,
           icon: FileText,
-          isActive: false,
+          isActive: true, // Auto-ativa a nova página
           isFixed: false,
+          isNew: true, // Aplica animação fade-in
         };
 
         set((state) => ({
           items: [
-            ...state.items.slice(0, finalIndex),
+            ...state.items
+              .slice(0, finalIndex)
+              .map((item) => ({ ...item, isActive: false })),
             newItem,
-            ...state.items.slice(finalIndex),
+            ...state.items
+              .slice(finalIndex)
+              .map((item) => ({ ...item, isActive: false })),
           ],
           hoveredInsertIndex: null,
         }));
+
+        // Remove o estado isNew após a animação
+        setTimeout(() => {
+          set((state) => ({
+            items: state.items.map((item) =>
+              item.id === newItemId ? { ...item, isNew: false } : item,
+            ),
+          }));
+        }, 300);
       },
 
       addPageAtEnd: () => {
@@ -144,22 +164,37 @@ export const useNavigationStore = create<NavigationStore>()(
         const endingIndex = items.findIndex(
           (item) => item.id === FIXED_PAGE_IDS.ENDING,
         );
+        const newItemId = crypto.randomUUID();
 
         const newItem: NavigationItem = {
-          id: crypto.randomUUID(),
+          id: newItemId,
           label: `Page ${items.filter((item) => !item.isFixed).length + 1}`,
           icon: FileText,
-          isActive: false,
+          isActive: true, // Auto-ativa a nova página
           isFixed: false,
+          isNew: true, // Aplica animação fade-in
         };
 
         set((state) => ({
           items: [
-            ...state.items.slice(0, endingIndex),
+            ...state.items
+              .slice(0, endingIndex)
+              .map((item) => ({ ...item, isActive: false })),
             newItem,
-            ...state.items.slice(endingIndex),
+            ...state.items
+              .slice(endingIndex)
+              .map((item) => ({ ...item, isActive: false })),
           ],
         }));
+
+        // Remove o estado isNew após a animação
+        setTimeout(() => {
+          set((state) => ({
+            items: state.items.map((item) =>
+              item.id === newItemId ? { ...item, isNew: false } : item,
+            ),
+          }));
+        }, 300);
       },
 
       closeContextMenu: () => {
