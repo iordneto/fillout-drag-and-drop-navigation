@@ -37,3 +37,16 @@ export const DEFAULT_CONTEXT_MENU_STATE = {
   position: { x: 0, y: 0 },
   itemId: null,
 } as const;
+
+export const DRAG_OVERLAY_STYLES = "rotate-3 scale-105 opacity-90";
+
+export const SCROLL_CONTAINER_STYLES = {
+  scrollbarWidth: "none" as const,
+  msOverflowStyle: "none" as const,
+};
+
+export const DRAG_SENSOR_CONFIG = {
+  activationConstraint: {
+    distance: 8,
+  },
+};
