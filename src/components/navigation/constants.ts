@@ -12,7 +12,7 @@ export const DEFAULT_NAVIGATION_ITEMS: NavigationItem[] = [
     label: "Info",
     icon: InfoIcon,
     isActive: true,
-    isFixed: true, // Sempre primeira
+    isFixed: true,
   },
   {
     id: crypto.randomUUID(),
@@ -28,7 +28,7 @@ export const DEFAULT_NAVIGATION_ITEMS: NavigationItem[] = [
     id: FIXED_PAGE_IDS.ENDING,
     label: "Ending",
     icon: CircleCheck,
-    isFixed: true, // Sempre última
+    isFixed: true,
   },
 ];
 
