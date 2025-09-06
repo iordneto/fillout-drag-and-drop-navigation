@@ -9,7 +9,9 @@
     "lint": "biome check",
     "lint-staged": "lint-staged",
     "format": "biome format --write",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "mv postcss.config.mjs postcss.config.mjs.bak 2>/dev/null || true && vitest && mv postcss.config.mjs.bak postcss.config.mjs 2>/dev/null || true",
+    "test:run": "mv postcss.config.mjs postcss.config.mjs.bak 2>/dev/null || true && vitest run && mv postcss.config.mjs.bak postcss.config.mjs 2>/dev/null || true"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,json,css,md}": [
@@ -41,6 +43,10 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.1.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@testing-library/react": "^16.0.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "happy-dom": "^15.0.0",
+    "vitest": "^2.0.0"
   }
 }
