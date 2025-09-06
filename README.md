@@ -2,6 +2,12 @@
 
 A modern, accessible drag-and-drop navigation component built with React, TypeScript, and Tailwind CSS.
 
+## 📋 Assignment Reference
+
+- **📋 [Assignment Instructions](https://recruiting.fillout.com/frontend-take-home)** - Original take-home requirements
+- **🎨 [Figma Design Reference](https://www.figma.com/design/ed3Q3i07AsMXevtcN5dYKX/Fillout-Frontend-Take-home---July-2025--Community-?node-id=1-107&t=8W3nbcfALIiObsEv-1)** - Visual design specifications
+- **💾 [GitHub Repository](https://github.com/iordneto/fillout-drag-and-drop-navigation)** - Complete source code
+
 ![Navigation Demo](https://via.placeholder.com/800x200/f3f4f6/6b7280?text=Navigation+Component+Demo)
 
 ## ✨ Features
@@ -144,6 +150,8 @@ const getButtonStyles = () => {
 
 ### **Fixed Pages Logic**
 
+> **💡 Design Inspiration**: The fixed first/last page concept mirrors Fillout's current form builder pattern, where certain pages (like intro/ending pages) maintain fixed positions. This was implemented as an **overdelivery** beyond the basic drag-and-drop requirements to match real-world usage patterns.
+
 #### **The Business Rules**
 ```typescript
 /**
@@ -244,6 +252,8 @@ const actions = ["setFirst", "rename", "copy", "duplicate", "delete"];
 // ✅ delete: Fully functional
 // 🚧 others: UI ready, logic can be added when needed
 ```
+
+> **🚧 Implementation Note**: Only the **delete** action is fully implemented in the context menu to demonstrate the complete interaction flow. The other menu options (rename, copy, duplicate, set as first) are present in the UI to show the complete design pattern, making it easy to add functionality when needed. This demonstrates a **pragmatic development approach** - building the complete UI structure while implementing only the essential functionality first.
 
 ## 🧪 Testing Philosophy
 
