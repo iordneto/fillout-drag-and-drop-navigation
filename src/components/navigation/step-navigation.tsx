@@ -55,7 +55,7 @@ const StepNavigation = memo(() => {
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <div className="relative flex items-center">
+      <div className="relative flex items-center py-1">
         <ScrollArrowButton
           direction="left"
           disabled={!canScrollLeft}
@@ -64,7 +64,7 @@ const StepNavigation = memo(() => {
 
         <div
           ref={scrollContainerRef}
-          className="flex-1 overflow-x-auto overflow-y-hidden scrollbar-hide"
+          className="flex-1 overflow-x-auto  scrollbar-hide"
           style={SCROLL_CONTAINER_STYLES}
         >
           <DndContext

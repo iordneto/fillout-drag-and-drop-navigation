@@ -147,6 +147,7 @@
   background-size: 10px 2px;
   background-repeat: repeat-x;
   transform: translateY(-50%);
+  margin: 0 10px;
 }
 
 .navigation-dotted-line > * {
